@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #08090a;
+  --color-surface: #0f1113;
+  --color-line: #1f2326;
+  --color-accent: #c8f55b;
+  --color-ink: #ededed;
+  --color-muted: #8b949e;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --animate-pulse-dot: pulse-dot 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(200 245 91 / 0.55);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(200 245 91 / 0);
+    opacity: 0.65;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--color-line) var(--color-canvas);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-canvas);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-canvas);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2c3235;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Faint ruled backdrop shared by the fixed background layer. */
+@utility editorial-grid {
+  background-image:
+    linear-gradient(to right, rgb(237 237 237 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(237 237 237 / 0.035) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: center top;
+}
+
+@utility top-glow {
+  background-image: radial-gradient(
+    60% 55% at 50% 0%,
+    rgb(200 245 91 / 0.09),
+    transparent 72%
+  );
+}
+
+/* Single small pulse used by the availability eyebrow. */
+@utility pulse-dot-ring {
+  animation: var(--animate-pulse-dot);
+}
+
+@layer components {
+  /* Scroll reveal driven by IntersectionObserver (see components/Reveal.tsx). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.55s ease-out,
+      transform 0.55s ease-out;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot-ring {
+    animation: none;
+  }
+
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
